@@ -1,76 +1,76 @@
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: gogs
-spec:
-  selector:
-    matchLabels:
-      app: gogs
-  serviceName: gogs
-  replicas: 1
-  template:
-    metadata:
-      labels:
+apiVersion: v1
+kind: List
+items:
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: gogs
+  spec:
+    selector:
+      matchLabels:
         app: gogs
-    spec:
-      terminationGracePeriodSeconds: 10
-      containers:
-      - name: gogs
-        image: quay.io/davivcgarcia/ubi-gogs:stable
+    serviceName: gogs
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: gogs
+      spec:
+        terminationGracePeriodSeconds: 10
+        containers:
+        - name: gogs
+          image: quay.io/davivcgarcia/ubi-gogs:stable
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "2000m"
+            limits:
+              memory: "512Mi"
+              cpu: "2000m"
+          ports:
+          - containerPort: 3000
+            name: http
+          volumeMounts:
+          - name: data
+            mountPath: /opt/gogs/data
+          - name: config
+            mountPath: /opt/gogs/custom
+    volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "2000m"
-          limits:
-            memory: "512Mi"
-            cpu: "2000m"
-        ports:
-        - containerPort: 3000
-          name: http
-        volumeMounts:
-        - name: data
-          mountPath: /opt/gogs/data
-        - name: config
-          mountPath: /opt/gogs/custom            
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-           storage: 40Gi
-  - metadata:
-      name: config
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-           storage: 5Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gogs
-spec:
-  selector:
-    app: gogs
-  ports:
-  - protocol: TCP
-    port: 3000
----
-kind: Route
-apiVersion: route.openshift.io/v1
-metadata:
-  name: gogs
-  annotations:
-    openshift.io/host.generated: 'true'
-spec:
-  to:
-    kind: Service
+             storage: 40Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+             storage: 5Gi
+- apiVersion: v1
+  kind: Service
+  metadata:
     name: gogs
-    weight: 100
-  port:
-    targetPort: 3000
-  wildcardPolicy: None
+  spec:
+    selector:
+      app: gogs
+    ports:
+    - protocol: TCP
+      port: 3000
+- kind: Route
+  apiVersion: route.openshift.io/v1
+  metadata:
+    name: gogs
+    annotations:
+      openshift.io/host.generated: 'true'
+  spec:
+    to:
+      kind: Service
+      name: gogs
+      weight: 100
+    port:
+      targetPort: 3000
+    wildcardPolicy: None
