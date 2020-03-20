@@ -5,10 +5,10 @@ ENV GOGS_BASEDIR /opt
 ENV GOGS_WORK_DIR ${GOGS_BASEDIR}/gogs
 ENV GOGS_DATADIR ${GOGS_WORK_DIR}/data
 ENV GOGS_PORT 3000
-ENV GOGS_USER git
+ENV GOGS_USER gogs
 ENV GOGS_HOMEDIR /home/${GOGS_USER}
 
-ADD helpers ${GOGS_PATH}/helpers
+ADD helpers ${GOGS_WORK_DIR}/helpers
 
 RUN yum -y install git nss_wrapper gettext && \
     yum -y clean all && \
@@ -25,4 +25,4 @@ EXPOSE 3000 22
 USER ${GOGS_USER}
 WORKDIR ${GOGS_WORK_DIR}
 
-CMD ["sh", "-c", "${GOGS_PATH}/helpers/run-gogs.sh"]
+CMD ["sh", "-c", "${GOGS_WORK_DIR}/helpers/run-gogs.sh"]
