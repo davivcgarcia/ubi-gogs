@@ -1,0 +1,92 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gogs-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 40Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gogs-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gogs
+  labels:
+    app.kubernetes.io/part-of: gogs
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gogs
+  template:
+    metadata:
+      labels:
+        app: gogs
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gogs-data
+        - name: config
+          persistentVolumeClaim:
+            claimName: gogs-config
+      containers:
+        - name: gogs
+          image: 'quay.io/davivcgarcia/ubi-gogs:stable'
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1000m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: data
+              mountPath: /opt/gogs/data
+            - name: config
+              mountPath: /opt/gogs/custom
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gogs
+spec:
+  selector:
+    app: gogs
+  ports:
+  - protocol: TCP
+    port: 3000
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: gogs
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  to:
+    kind: Service
+    name: gogs
+    weight: 100
+  port:
+    targetPort: 3000
+  wildcardPolicy: None
