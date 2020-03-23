@@ -12,7 +12,7 @@ This image was build using the [Red Hat Universal Base Image (UBI) 8](https://de
 If you running standalone containers, you can use `podman` or `docker` with:
 
 ```bash
-podman run -it -p 3000:3000 --user 21241 quay.io/davivcgarcia/ubi-gogs
+podman run -d -p 3000:3000 quay.io/davivcgarcia/ubi-gogs
 ```
 
 If you running containers on Kubernetes (including the OpenShift distribution), and have Dynamic Provisioning for storage enabled, you can use `kubectl` or `oc` to deploy a `StatefulSet` with:
