@@ -39,6 +39,43 @@ spec:
       labels:
         app: gogs
     spec:
+      containers:
+        - name: gogs
+          image: 'quay.io/davivcgarcia/ubi-gogs:stable'
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+              name: http
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "1"
+            limits:
+              memory: "512Mi"
+              cpu: "2"
+          volumeMounts:
+            - name: data
+              mountPath: /opt/gogs/data
+            - name: config
+              mountPath: /opt/gogs/custom
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 3
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 3
+            periodSeconds: 10
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -46,24 +83,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: gogs-config
-      containers:
-        - name: gogs
-          image: 'quay.io/davivcgarcia/ubi-gogs:stable'
-          ports:
-            - containerPort: 3000
-              protocol: TCP
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "1000m"
-            limits:
-              memory: "512Mi"
-              cpu: "2000m"
-          volumeMounts:
-            - name: data
-              mountPath: /opt/gogs/data
-            - name: config
-              mountPath: /opt/gogs/custom
 ---
 apiVersion: v1
 kind: Service
