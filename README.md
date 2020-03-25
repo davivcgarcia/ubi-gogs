@@ -25,7 +25,11 @@ If you don't have dynamic provisioning for PersistentVolumes enabled, please cre
 
 ## How to configure?
 
-If you are running it on OpenShift/Kubernetes, you will notice that the resource template is configured to use container volumes at `/opt/gogs/data` and `/opt/gogs/custom`, mapped to `PersistentVolumes`. You need to use this path to configure Gogs' (repositories and logs path).
+If you are running it on OpenShift/Kubernetes, you will notice that the resource template is configured to use container volumes at `/opt/gogs/data` and `/opt/gogs/custom`, mapped to `PersistentVolumes`. You need to use the path `/opt/gogs/data` to configure Gogs to store its repositories data. You could use it to persists logs too, but the recomendation is to enable console output.
+
+The container can run using any unprivileged user ID, which will be mapped automaticaly to user `gogs` and used to run the application. So configure to use this user instead of the default `git`.
+
+By default, the container will be listening internally on port `tcp/3000`, so do not change it when configuring. You could also enable native SSH service, using internal port `tcp/3022`. When using standalone containers, map these ports to available local ports. If you are running containers on Kubernetes/OpenShift, you can use Ingress/Routes exposed as `tcp/80 (HTTP)` or `tcp/443 (HTTPS)` redirecting to `tcp/3000` (mechanism is created by default) and Service type NodePort/LoadBalancer for `tcp/3022` (need manual setup).
 
 Also, you could use `SQLite` as database, storing the file at `/opt/gogs/data`. But the prefered way is to setup a PostgreSQL database and use it instead.
 
