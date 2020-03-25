@@ -15,7 +15,7 @@ If you running standalone containers, you can use `podman` or `docker` with:
 podman run -d -p 3000:3000 -p 3022:3022 quay.io/davivcgarcia/ubi-gogs
 ```
 
-If you running containers on OpenShift/Kubernetes, and have dynamic provisioning enabled, you can use `kubectl` or `oc` to deploy it redirectly from this repo:
+If you running containers on OpenShift (or Kubernetes using Ingress instead of Router API), and have dynamic provisioning enabled, you can use `kubectl` or `oc` to deploy it redirectly from this repo:
 
 ```bash
 oc apply -f https://raw.githubusercontent.com/davivcgarcia/ubi-gogs/master/resources/openshift.yaml
