@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
         - name: gogs
-          image: 'quay.io/davivcgarcia/ubi-gogs:stable'
+          image: 'quay.io/davivcgarcia/ubi-gogs'
           ports:
             - containerPort: 3000
               protocol: TCP
