@@ -18,6 +18,7 @@ podman run -d -p 3000:3000 -p 3022:3022 quay.io/davivcgarcia/ubi-gogs
 If you running containers on OpenShift (or Kubernetes using Ingress instead of Router API), and have dynamic provisioning enabled, you can use `kubectl` or `oc` to deploy it redirectly from this repo:
 
 ```bash
+oc new-project gogs
 oc apply -f https://github.com/davivcgarcia/ubi-gogs/releases/latest/download/openshift-resources.yaml
 ```
 
