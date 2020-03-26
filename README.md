@@ -18,7 +18,7 @@ podman run -d -p 3000:3000 -p 3022:3022 quay.io/davivcgarcia/ubi-gogs
 If you running containers on OpenShift (or Kubernetes using Ingress instead of Router API), and have dynamic provisioning enabled, you can use `kubectl` or `oc` to deploy it redirectly from this repo:
 
 ```bash
-oc apply -f https://raw.githubusercontent.com/davivcgarcia/ubi-gogs/master/resources/openshift.yaml
+oc apply -f https://github.com/davivcgarcia/ubi-gogs/releases/latest/download/openshift-resources.yaml
 ```
 
 If you don't have dynamic provisioning for PersistentVolumes enabled, please create the required `PersistentVolume` resources and map them to the `PersistentVolumeClaim` resources before deployment.
