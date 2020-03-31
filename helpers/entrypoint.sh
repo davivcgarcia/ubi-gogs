@@ -18,6 +18,14 @@ export NSS_WRAPPER_PASSWD=${GOGS_WORKDIR}/nss_wrapper-passwd
 export NSS_WRAPPER_GROUP=/etc/group
 
 #
+# Expose common environment variables
+#
+
+export USER=${GOGS_USER}
+export HOME=${GOGS_HOMEDIR}
+export LANG=en_US.UTF-8
+
+#
 # Executes user provided command instead of default
 #
 
@@ -30,5 +38,5 @@ fi
 # Executes default command defined on Dockerfile
 #
 
-HOME=${GOGS_HOMEDIR} USER=${GOGS_USER} PORT=${GOGS_PORT} ${GOGS_WORKDIR}/gogs web
+${GOGS_WORKDIR}/gogs web
 exit $?
